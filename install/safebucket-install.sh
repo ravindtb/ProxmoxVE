@@ -24,7 +24,7 @@ if [[ -z "$GARAGE_VERSION" ]]; then
   msg_error "Could not determine latest stable Garage version"
   exit 1
 fi
-curl -fsSL "https://garagehq.deuxfleurs.fr/_releases/${GARAGE_VERSION}/$(arch_resolve "x86_64-unknown-linux-musl" "aarch64-unknown-linux-musl")/garage" -o /usr/local/bin/garage
+curl_download "/usr/local/bin/garage" "https://garagehq.deuxfleurs.fr/_releases/${GARAGE_VERSION}/$(arch_resolve "x86_64-unknown-linux-musl" "aarch64-unknown-linux-musl")/garage"
 chmod +x /usr/local/bin/garage
 mkdir -p /opt/garage/{data,meta}
 RPC_SECRET=$(openssl rand -hex 32)
@@ -195,6 +195,11 @@ auth:
 EOF
 chmod 600 /opt/safebucket/config.yaml
 chown -R safebucket:safebucket /opt/safebucket
+cat <<EOF >~/safebucket.creds
+Safebucket Admin
+Username: admin@safebucket.io
+Password: ${ADMIN_PASSWORD}
+EOF
 msg_ok "Configured Safebucket"
 
 msg_info "Creating Service"
